@@ -3,10 +3,8 @@
 This code sets up a basic structure for a TeleOp mode in an FTC robot. 
 It initializes several hardware components, waits for the start of the match, and enters a loop that continues until the match ends. 
 You would typically add additional logic within the main loop to control the robot’s behavior based on sensor input and driver commands.
-/* 
+*/
 
-@TeleOp 
-// This annotation indicates that the class is a TeleOp (Teleoperated) mode. In FTC, TeleOp is when drivers control the robot using game controllers. The comment block at the top is a simple header indicating that this is a base OpMode template.
 
 /* 
 Classes are Object Oriented Programming (OOP) code.
@@ -18,6 +16,8 @@ and you can make different instances of the class,
 like a red car, green car, etc.
 */
 
+// // This annotation indicates that the class is a TeleOp (Teleoperated) mode. In FTC, TeleOp is when drivers control the robot using game controllers. The comment block at the top is a simple header indicating that this is a base OpMode template.
+@TeleOp 
     
 public class MyFIRSTJavaOpMode extends LinearOpMode { //This is the name of the class, and it extends LinearOpMode, which is a base class for OpModes that allows for sequential execution of code.
     /*
