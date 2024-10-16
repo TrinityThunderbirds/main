@@ -2,15 +2,16 @@
 // simple teleop program that drives bot using controller joysticks in tank mode.
 // this code monitors the period and stops when the period is ended.
 
-package org.firstinspires.ftc.teamcode;
 
+//Necessary Imports
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+//Giving the TeleOp a Name
 @TeleOp(name="Drive Tank", group="Exercises")
-//@Disabled
 public class DriveTank extends LinearOpMode
 {
     DcMotor leftMotor, rightMotor;
@@ -29,9 +30,9 @@ public class DriveTank extends LinearOpMode
         telemetry.update();
 
         // wait for start button.
-
         waitForStart();
 
+        //While the OpMode is active
         while (opModeIsActive())
         {
             leftY = gamepad1.left_stick_y * -1;
