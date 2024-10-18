@@ -65,6 +65,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
  * The intake wheels are powered by a goBILDA Speed Servo (2000-0025-0003) in Continuous Rotation mode.
  */
 
+// In simple terms, this moves the grabber-arm to specified setpoints/locations.
+// This is done by controlling the # of degrees of rotation from the arm's starting rotation.
 
 @TeleOp(name="FTC Starter Kit Example Robot (INTO THE DEEP)", group="Robot")
 //@Disabled
