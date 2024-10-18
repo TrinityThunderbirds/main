@@ -35,8 +35,8 @@ public class DriveTank extends LinearOpMode
         //While the OpMode is active
         while (opModeIsActive())
         {
-            leftY = gamepad1.left_stick_y * -1;
-            rightY = gamepad1.right_stick_y * -1;
+            leftY = gamepad1.left_stick_y * 1;
+            rightY = gamepad1.right_stick_y * 1;
 
             leftMotor.setPower(Range.clip(leftY, -1.0, 1.0));
             rightMotor.setPower(Range.clip(rightY, -1.0, 1.0));
