@@ -24,7 +24,7 @@ public class DriveTank extends LinearOpMode
         leftMotor = hardwareMap.dcMotor.get("left_motor");
         rightMotor = hardwareMap.dcMotor.get("right_motor");
         
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
