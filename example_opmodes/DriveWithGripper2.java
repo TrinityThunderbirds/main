@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -12,14 +11,10 @@ import com.qualcomm.robotcore.util.Range;
 public class DriveWithGripper2 extends LinearOpMode
 {
     DcMotor leftDrive, rightDrive, armMotor;
-    Servo   intakeServo;
-    CRServo contServo;
-    float   leftY, rightY;
-    double  gripPosition, contPower;
-    double  aLastTime, bLastTime;
-    final double MIN_POSITION = 0, MAX_POSITION = 1;
-    final double ARM_POWER_INCREMENT = 0.05;
-
+    // Servo intakeServo;   // Commenting out the servo for intake
+    // Servo wristServo;    // Commenting out the wrist servo
+    float leftX, leftY, rightY;
+    // double intakePower; // Commenting out intake variables
     boolean intakeOn = false; // Track intake toggle state
     boolean lastXPress = false; // To prevent multiple toggles from a single button press
     boolean lastYPress = false;
@@ -29,12 +24,12 @@ public class DriveWithGripper2 extends LinearOpMode
     {
         leftDrive = hardwareMap.dcMotor.get("left_drive");
         rightDrive = hardwareMap.dcMotor.get("right_drive");
-        armMotor = hardwareMap.dcMotor.get("arm_motor");  // Now correctly defined as a DcMotor
-        intakeServo = hardwareMap.servo.get("intake_servo");
-        contServo = hardwareMap.crservo.get("cont_servo");
+        armMotor = hardwareMap.dcMotor.get("arm_motor");
+        // intakeServo = hardwareMap.servo.get("intake_servo"); // Commented out intake servo
+        // wristServo = hardwareMap.servo.get("wrist_servo");   // Commented out wrist servo
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE); // Usually one motor needs to be reversed
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
@@ -42,87 +37,59 @@ public class DriveWithGripper2 extends LinearOpMode
         // wait for start button.
         waitForStart();
 
-        gripPosition = MAX_POSITION; // set grip to full open
-
         while (opModeIsActive())
         {
-            leftY = gamepad1.left_stick_y * 1;
-            rightY = gamepad1.right_stick_y * 1;
+            // Left joystick for driving
+            leftY = -gamepad1.left_stick_y; // Inverted to match standard forward/backward
+            leftX = gamepad1.left_stick_x;
 
-            leftDrive.setPower(Range.clip(leftY, -1.0, 1.0));
-            rightDrive.setPower(Range.clip(rightY, -1.0, 1.0));
+            // Right joystick for arm control (up/down)
+            rightY = -gamepad1.right_stick_y; // Inverted for natural up/down motion
 
-            telemetry.addData("Mode", "running");
-            telemetry.addData("sticks", "  left: " + leftY + "  right: " + rightY);
+            // Set driving power (basic tank drive)
+            double leftPower = Range.clip((leftY + leftX) * 0.8, -1.0, 1.0); // Forward/backward and left/right
+            double rightPower = Range.clip((leftY - leftX) * 0.8, -1.0, 1.0); // Forward/backward and left/right
+            leftDrive.setPower(leftPower);
+            rightDrive.setPower(rightPower);
 
-            // Control the arm motor with A and B buttons (increment or decrement motor power)
-            if (gamepad1.a)
-            {
-                if (getRuntime() - aLastTime > .075)
-                {
-                    armMotor.setPower(Range.clip(-ARM_POWER_INCREMENT, -1.0, 1.0)); // Move arm down
-                    aLastTime = getRuntime();
-                }
-            }
-            else if (gamepad1.b)
-            {
-                if (getRuntime() - bLastTime > .075)
-                {
-                    armMotor.setPower(Range.clip(ARM_POWER_INCREMENT, -1.0, 1.0)); // Move arm up
-                    bLastTime = getRuntime();
-                }
-            }
-            else
-            {
-                armMotor.setPower(0); // Stop the arm motor when no button is pressed
-            }
+            // Set arm power based on right joystick Y-axis
+            armMotor.setPower(Range.clip(rightY * 0.8, -1.0, 1.0));
 
-            // Intake Toggle Control using X and Y buttons
-            if (gamepad1.x && !lastXPress) // Check if X is pressed and was not previously pressed
-            {
-                intakeOn = !intakeOn; // Toggle the intake state
-                lastXPress = true; // Mark X as pressed to prevent double toggling
-            }
-            else if (!gamepad1.x)
-            {
-                lastXPress = false; // Reset X press status once button is released
-            }
+            // Commenting out the intake and wrist controls below:
 
-            if (gamepad1.y && !lastYPress) // Y button to turn off the intake
-            {
-                intakeOn = false; // Ensure intake is off when Y is pressed
-                lastYPress = true;
-            }
-            else if (!gamepad1.y)
-            {
-                lastYPress = false;
-            }
+            // // Intake Toggle Control using X and Y buttons
+            // if (gamepad1.x && !lastXPress) {
+            //     intakeOn = !intakeOn; // Toggle the intake state
+            //     lastXPress = true; // Mark X as pressed to prevent double toggling
+            // } else if (!gamepad1.x) {
+            //     lastXPress = false; // Reset X press status once button is released
+            // }
 
-            // Set intake servo position based on intake toggle state
-            if (intakeOn)
-            {
-                intakeServo.setPosition(MAX_POSITION); // Set intake servo to open position
-            }
-            else
-            {
-                intakeServo.setPosition(MIN_POSITION); // Set intake servo to closed position
-            }
+            // if (gamepad1.y && !lastYPress) {
+            //     intakeOn = false; // Ensure intake is off when Y is pressed
+            //     lastYPress = true;
+            // } else if (!gamepad1.y) {
+            //     lastYPress = false;
+            // }
 
-            // Set continuous servo power level and direction
-            if (gamepad1.dpad_left)
-                contPower = .20;
-            else if (gamepad1.dpad_right)
-                contPower = -.20;
-            else
-                contPower = 0.0;
+            // // Intake Servo Control using triggers
+            // if (intakeOn) {
+            //     if (gamepad1.left_trigger > 0) {
+            //         intakeServo.setPosition(Range.clip(intakeServo.getPosition() + 0.01, 0, 1)); // Move up
+            //     } else if (gamepad1.right_trigger > 0) {
+            //         intakeServo.setPosition(Range.clip(intakeServo.getPosition() - 0.01, 0, 1)); // Move down
+            //     }
+            // }
 
-            // Set the continuous servo power
-            contServo.setPower(contPower);
-
-            telemetry.addData("intake servo", "position=%.2f", intakeServo.getPosition());
-            telemetry.addData("intake", intakeOn ? "On" : "Off");
+            // Telemetry feedback
+            telemetry.addData("left power", leftPower);
+            telemetry.addData("right power", rightPower);
+            telemetry.addData("arm power", rightY);
+            // telemetry.addData("intake servo", "position=%.2f", intakeServo.getPosition()); // Commented out
+            telemetry.addData("intake", intakeOn ? "On" : "Off"); // Will show "Off" always since intake is off
             telemetry.update();
-            idle();
+
+            idle(); // Always call idle() at the end of each loop iteration
         }
     }
 }
