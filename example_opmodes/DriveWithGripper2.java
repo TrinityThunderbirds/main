@@ -71,6 +71,7 @@ public class DriveWithGripper2 extends LinearOpMode {
                 armMotor.setPower(0); // Stop arm if no triggers are pressed
             }
 
+            // Turns wrist from 0 - 1 in increments of 0.1 whenever needed.
             if (gamepad1.left_bumper && wristServoPos != 1) {
                 wristServoPos += 0.1;
                 wristServo.setPosition(wristServoPos);
@@ -80,6 +81,7 @@ public class DriveWithGripper2 extends LinearOpMode {
                 wristServo.setPosition(wristServoPos);
             }
 
+            // Basically tells the intake to grab something (on) vs do nothing (off).
             if (gamepad1.y) {
                 intakeServo.setPosition(1);
             }
