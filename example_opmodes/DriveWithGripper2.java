@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Drive Gripper 2", group="Exercises")
 //@Disabled
 public class DriveWithGripper2 extends LinearOpMode {
-public class DriveWithGripper2 extends LinearOpMode {
     DcMotor leftDrive, rightDrive, armMotor;
     Servo intakeServo, wristServo;
     float leftX, leftY, rightY;
@@ -17,7 +16,6 @@ public class DriveWithGripper2 extends LinearOpMode {
     long turnDuration = 350; // Duration in milliseconds to turn 90 degrees
 
     @Override
-    public void runOpMode() throws InterruptedException {
     public void runOpMode() throws InterruptedException {
         leftDrive = hardwareMap.dcMotor.get("left_drive");
         rightDrive = hardwareMap.dcMotor.get("right_drive");
@@ -28,14 +26,10 @@ public class DriveWithGripper2 extends LinearOpMode {
         // Reverse motor directions
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        // Reverse motor directions
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         telemetry.addData("Mode", "waiting");
         telemetry.update();
 
-        // Wait for start button
         // Wait for start button
         waitForStart();
 
@@ -98,8 +92,6 @@ public class DriveWithGripper2 extends LinearOpMode {
             telemetry.addData("right power", rightDrive.getPower());
             telemetry.addData("arm power", armMotor.getPower());
             telemetry.update();
-
-            idle(); // Always call idle() at the end of each loop iteration
 
             idle(); // Always call idle() at the end of each loop iteration
         }
