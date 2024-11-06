@@ -320,15 +320,47 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
     public void moveFoward(num){
         /* 
             Insert: Number in feet or meters idk yet 
+                - If num is positive it goes forward
+                - If num is negative is goes backwards
             Export: It hopefully should go that respective distance 
+            
                                 */
+        if(num > 0){
+        leftDrive.setPower(0.5);
+        rightDrive.setPower(-0.5);
+        sleep(num*1000);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        }
+        if(num<0){
+        leftDrive.setPower(-0.5);
+        rightDrive.setPower(0.5);
+        sleep(num*1000);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        }
 
     }
     public void moveSideaway(degree){
         /* 
             Insert: A certain degree you want it to turn
             Export: It will move those respective degrees
+            Positive is to the ___ and negative is to the ___
         */
+        if(num>0){
+        leftDrive.setPower(0.5);
+        rightDrive.setPower(0.5);
+        sleep(degree * 1000);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        }
+        if(num<0){
+        leftDrive.setPower(-0.5);
+        rightDrive.setPower(-0.5);
+        sleep(degree * 1000);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        }
         
     }
     public void Sample_pickup(){
