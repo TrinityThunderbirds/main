@@ -312,6 +312,35 @@ public class ConceptGoBildaStarterKitRobotTeleop_IntoTheDeep extends LinearOpMod
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
             telemetry.update();
 
+            
         }
+        
+    }
+    
+    public void moveFoward(num){
+        /* 
+            Insert: Number in feet or meters idk yet 
+            Export: It hopefully should go that respective distance 
+                                */
+
+    }
+    public void moveSideaway(degree){
+        /* 
+            Insert: A certain degree you want it to turn
+            Export: It will move those respective degrees
+        */
+        
+    }
+    public void Sample_pickup(){
+        /*
+            This should move the arm in the successfull position for picking up the object
+        */
+    }   
+    public void Sample_dropoff(){
+        /*
+            This should drop off the object into a certain block 
+
+            This accounts for arm and wrist movement and small adjustments that need to be made
+        */
     }
 }
