@@ -22,7 +22,7 @@ public class DriveWithGripper2 extends LinearOpMode {
         intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
         wristServo = hardwareMap.servo.get("wrist_servo");
 
-        // Reverse motor directions if necessary
+        // Set motor directions
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
@@ -32,50 +32,52 @@ public class DriveWithGripper2 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            // Gamepad 1 controls: Driving
-            double drive = -gamepad1.left_stick_y; // Forward/backward
-            double turn = gamepad1.right_stick_x; // Rotation
-            double leftPower = Range.clip(drive + turn, -1.0, 1.0);
-            double rightPower = Range.clip(drive - turn, -1.0, 1.0);
+            // **Driving Controls**
 
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
+            // Forward and backward movement with left joystick (y-axis)
+            double drivePower = -gamepad1.left_stick_y;
+            leftDrive.setPower(drivePower);
+            rightDrive.setPower(drivePower);
 
-            // Gamepad 2 controls: Arm, intake, wrist, and hang
-            // Arm up/down with left joystick
+            // Rotation with right joystick (x-axis)
+            double rotatePower = gamepad1.right_stick_x;
+            leftDrive.setPower(rotatePower);
+            rightDrive.setPower(-rotatePower);
+
+            // **Arm Control with Left Joystick on Gamepad 2**
             double armPower = -gamepad2.left_stick_y;
-            armMotor.setPower(armPower);
+            armMotor.setPower(Range.clip(armPower, -1.0, 1.0));
 
-            // Intake collect (left trigger) and deposit (right trigger)
+            // **Intake Servo (CRServo) Control**
             if (gamepad2.left_trigger > 0) {
                 intakeServo.setPower(1.0); // Collect
+                telemetry.addData("Intake", "Collecting");
             } else if (gamepad2.right_trigger > 0) {
                 intakeServo.setPower(-1.0); // Deposit
+                telemetry.addData("Intake", "Depositing");
             } else {
                 intakeServo.setPower(0); // Stop intake if no triggers are pressed
+                telemetry.addData("Intake", "Stopped");
             }
 
-            // Wrist control with D-pad
+            // **Wrist Servo Control**
             if (gamepad2.dpad_left) {
-                wristServo.setPosition(0.2); // Rotate wrist left
+                wristServo.setPosition(0.0); // Rotate wrist left
+                telemetry.addData("Wrist", "Left Position (0.0)");
             } else if (gamepad2.dpad_right) {
-                wristServo.setPosition(0.8); // Rotate wrist right
+                wristServo.setPosition(1.0); // Rotate wrist right
+                telemetry.addData("Wrist", "Right Position (1.0)");
             } else if (gamepad2.dpad_up) {
                 wristServo.setPosition(0.5); // Set wrist straight
+                telemetry.addData("Wrist", "Straight Position (0.5)");
             }
 
-            // Hang mechanism with 'A' button
-            if (gamepad2.a) {
-                // Code for hanging mechanism (depends on hardware specifics)
-                // Placeholder code (customize as needed)
-                telemetry.addData("Hang", "Activated");
-            }
-
-            // Telemetry feedback
-            telemetry.addData("left power", leftDrive.getPower());
-            telemetry.addData("right power", rightDrive.getPower());
-            telemetry.addData("arm power", armMotor.getPower());
-            telemetry.addData("intake power", intakeServo.getPower());
+            // **Telemetry Feedback**
+            telemetry.addData("Drive Power", drivePower);
+            telemetry.addData("Rotate Power", rotatePower);
+            telemetry.addData("Arm Power", armMotor.getPower());
+            telemetry.addData("Intake Servo Power", intakeServo.getPower());
+            telemetry.addData("Wrist Servo Position", wristServo.getPosition());
             telemetry.update();
 
             idle(); // Always call idle() at the end of each loop iteration
