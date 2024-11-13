@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled
 public class DriveWithGripper2 extends LinearOpMode {
     DcMotor leftDrive, rightDrive, armMotor;
-    Servo intakeServo, wristServo;
+    Servo wristServo;
+    CRServo intakeServo;
     float leftX, leftY, rightY;
 
     boolean isTurning = false; // Flag to indicate if the robot is currently turning
@@ -83,10 +84,10 @@ public class DriveWithGripper2 extends LinearOpMode {
 
             // Basically tells the intake to grab something (on) vs do nothing (off).
             if (gamepad1.y) {
-                intakeServo.setPosition(1);
+                intakeServo.setPower(1);
             }
             if (gamepad1.a) {
-                intakeServo.setPosition(0);
+                intakeServo.setPower(0);
             }
 
             // Telemetry feedback
