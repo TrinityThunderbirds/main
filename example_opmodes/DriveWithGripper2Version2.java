@@ -44,24 +44,34 @@ public class DriveWithGripper2 extends LinearOpMode {
             leftDrive.setPower(rotatePower);
             rightDrive.setPower(-rotatePower);
 
-            // **Arm Control with Left Joystick on Gamepad 2**
-            double armPower = -gamepad2.left_stick_y;
-            armMotor.setPower(Range.clip(armPower, -1.0, 1.0));
+            // **Arm Control with Triggers on Gamepad 1**
+            if (gamepad1.left_trigger > 0) {
+                armMotor.setPower(0.7);
+            } else if (gamepad1.right_trigger > 0) {
+                armMotor.setPower(-0.7);
+            }
 
             // **Intake Servo (CRServo) Control**
-            if (gamepad2.left_trigger > 0) {
+            if (gamepad1.x) {
                 intakeServo.setPower(1.0); // Collect
-                telemetry.addData("Intake", "Collecting");
-            } else if (gamepad2.right_trigger > 0) {
+                //telemetry.addData("Intake", "Collecting");
+            } else if (gamepad1.b) {
                 intakeServo.setPower(-1.0); // Deposit
-                telemetry.addData("Intake", "Depositing");
+                //telemetry.addData("Intake", "Depositing");
             } else {
                 intakeServo.setPower(0); // Stop intake if no triggers are pressed
                 telemetry.addData("Intake", "Stopped");
             }
 
+            // ** Hang **
+            if (gamepad1.y) {
+                while(true) {
+                    armMotor.setPower(1);
+                }
+            }
+
             // **Wrist Servo Control**
-            if (gamepad2.dpad_left) {
+            if (gamepad1.dpad_left) {
                 wristServo.setPosition(0.0); // Rotate wrist left
                 telemetry.addData("Wrist", "Left Position (0.0)");
             } else if (gamepad2.dpad_right) {
