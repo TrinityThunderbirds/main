@@ -101,22 +101,42 @@ public class DriveWithGripper2 extends LinearOpMode {
     }
 
     private void turnRight() {
+        // Delegates current / power to one wheel while reducing the current / power to the other wheel
+        // This leads the directional wheels to go Right.
         leftDrive.setPower(0.4);
         rightDrive.setPower(-0.4);
+
+        // Set the boolean isTurning to true (this doesn't serve any purpose)
         isTurning = true;
+
+        // This ensures the turning doesn't happen instantly, leading to smoother control.
         sleep(turnDuration);
+
+        // After the robot has successfully turned, set the power to the directional wheels to 0, to ensure no further turning.
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+
+        // Signal that the turning process is finished.
         isTurning = false;
     }
 
     private void turnLeft() {
+        // Delegates current / power to one wheel while reducing the current / power to the other wheel
+        // This leads the directional wheels to go Left
         leftDrive.setPower(-0.4);
         rightDrive.setPower(0.4);
+
+        // Set the boolean isTurning to true (this doesn't serve any purpose)
         isTurning = true;
+
+        // This ensures the turning doesn't happen instantly, leading to smoother control.
         sleep(turnDuration);
+
+        // After the robot has successfully turned, set the power to the directional wheels to 0, to ensure no further turning.
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+
+         // Signal that the turning process is finished.
         isTurning = false;
     }
 }
