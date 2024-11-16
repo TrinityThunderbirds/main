@@ -17,6 +17,7 @@ public class DriveWithGripper2 extends LinearOpMode {
     private static final double gearReduction = 1/3;
     private static final double wheelDiameterMM = 96;
     private static final double countsPerMM = (TPR * gearReduction) / (wheelDiameterMM * Math.PI);
+    private double initialPos;
 
     @Override
     public void runOpMode() {
@@ -41,7 +42,7 @@ public class DriveWithGripper2 extends LinearOpMode {
         }
 
     }
-    
+
     // This should THEORETICALLY make it so that both motors move to the same encoder position, hence driving forward.
     private void driveForward(double inches, double power) {
         // Calculate target position in encoder ticks
@@ -75,6 +76,37 @@ public class DriveWithGripper2 extends LinearOpMode {
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+/*
+    private void rotate(double degrees, double power){
+        // Set target position
+        leftMotor.setTargetPosition(leftMotor.getCurrentPosition() + targetPosition);
+        rightMotor.setTargetPosition(rightMotor.getCurrentPosition() + targetPosition);
+
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set motor power
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
+
+        // Wait for the motors to reach the target position
+        while (opModeIsActive() && (leftMotor.isBusy() || rightMotor.isBusy())) {
+            telemetry.addData("Target", targetPosition);
+            telemetry.addData("Left Current", leftMotor.getCurrentPosition());
+            telemetry.addData("Right Current", rightMotor.getCurrentPosition());
+            telemetry.update();
+        }
+
+        // Stop motors
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+
+        // Reset to RUN_USING_ENCODER mode
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    }
+        */
 }
 
 
