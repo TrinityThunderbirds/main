@@ -35,9 +35,15 @@ public class DriveWithGripper2 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+        
+        while (opModeIsActive){
+
+        }
 
     }
-    private void driveDistance(double inches, double power) {
+    
+    // This should THEORETICALLY make it so that both motors move to the same encoder position, hence driving forward.
+    private void driveForward(double inches, double power) {
         // Calculate target position in encoder ticks
         double targetPosition = (inches * 25.4 * countsPerMM);
 
