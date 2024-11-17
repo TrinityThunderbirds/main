@@ -53,8 +53,8 @@ public class DriveWithGripper2 extends LinearOpMode {
         double targetPosition = (inches * 25.4 * countsPerMM);
 
         // Set target position
-        leftDrive.setTargetPosition(leftMotor.getCurrentPosition() + targetPosition);
-        rightDrive.setTargetPosition(rightMotor.getCurrentPosition() + targetPosition);
+        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + targetPosition);
+        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + targetPosition);
 
         // Set motors to RUN_TO_POSITION mode
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
