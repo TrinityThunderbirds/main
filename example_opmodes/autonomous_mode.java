@@ -36,14 +36,18 @@ public class DriveWithGripper2 extends LinearOpMode {
 
         waitForStart();
         
-            intakeServo.setPower(1);
-            driveForward(30, 1);
-            armRotate(150, 1);
-            intakeServo.setDirection(DcMotor.Direction.REVERSE);
-            sleep(1000);
-            intakeServo.setPower(0);
-            armRotate(-150, 1);
-            driveForward(-120, 1);
+        intakeServo.setPower(1);
+        driveForward(30, 1);
+        armRotate(150, 1);
+        intakeServo.setDirection(DcMotor.Direction.REVERSE);
+        sleep(1000);
+        intakeServo.setPower(0);
+        armRotate(-150, 1);
+        driveForward(-120, 1);
+
+        // Log that mode in finished
+        telemetry.addData("Mode", "Finished");
+        telemetry.update();
 
     }
 
@@ -73,12 +77,15 @@ public class DriveWithGripper2 extends LinearOpMode {
         }
 
         // Stop motors
+        
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-
+        
         // Reset to RUN_USING_ENCODER mode
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+      
     }
 
     private void armRotate(double degrees, double power){
@@ -102,9 +109,9 @@ public class DriveWithGripper2 extends LinearOpMode {
         }
 
         // Stop motor
-        if(targetPositionMotor == armMotor.getCurrentPosition()){
+        
         armMotor.setPower(0);
-        }
+        
         // Reset to RUN_USING_ENCODER mode
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
