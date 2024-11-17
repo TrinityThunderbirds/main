@@ -55,38 +55,40 @@ public class DriveWithGripper2 extends LinearOpMode {
         double targetPosition = (inches * 25.4 * countsPerMM);
 
         // Set target position
-        leftMotor.setTargetPosition(leftMotor.getCurrentPosition() + targetPosition);
-        rightMotor.setTargetPosition(rightMotor.getCurrentPosition() + targetPosition);
+        leftDrive.setTargetPosition(leftMotor.getCurrentPosition() + targetPosition);
+        rightDrive.setTargetPosition(rightMotor.getCurrentPosition() + targetPosition);
 
         // Set motors to RUN_TO_POSITION mode
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set motor power
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
 
         // Wait for the motors to reach the target position
-        while (opModeIsActive() && (leftMotor.isBusy() || rightMotor.isBusy())) {
+        while (opModeIsActive() && (leftDrive.isBusy() || rightDrive.isBusy())) {
             telemetry.addData("Target", targetPosition);
-            telemetry.addData("Left Current", leftMotor.getCurrentPosition());
-            telemetry.addData("Right Current", rightMotor.getCurrentPosition());
+            telemetry.addData("Left Current", leftDrive.getCurrentPosition());
+            telemetry.addData("Right Current", rightDrive.getCurrentPosition());
             telemetry.update();
         }
 
         // Stop motors
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
 
         // Reset to RUN_USING_ENCODER mode
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void armRotate(double degrees, double power){
         // Set target position
         double armTargetPosition = ((degrees * 1/5)/360) * 1425.1;
 
+        double targetPositionMotor = armMotor.getCurrentPosition() + targetPosition;
+        
         armMotor.setTargetPosition(armMotor.getCurrentPosition() + targetPosition);
 
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -102,8 +104,9 @@ public class DriveWithGripper2 extends LinearOpMode {
         }
 
         // Stop motor
+        if(targetPositionMotor == armMotor.getCurrentPosition()){
         armMotor.setPower(0);
-
+        }
         // Reset to RUN_USING_ENCODER mode
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
