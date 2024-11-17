@@ -14,7 +14,7 @@ public class DriveWithGripper2 extends LinearOpMode {
     Servo wristServo;
 
     private static final double TPR = 537.7;
-    private static final double gearReduction = 1/3;
+    private static final double gearReduction = 1.0/3.0;
     private static final double wheelDiameterMM = 96;
     private static final double countsPerMM = (TPR * gearReduction) / (wheelDiameterMM * Math.PI);
     private double initialPos = 48;
