@@ -17,7 +17,7 @@ public class DriveWithGripper2 extends LinearOpMode {
     private static final double gearReduction = 1/3;
     private static final double wheelDiameterMM = 96;
     private static final double countsPerMM = (TPR * gearReduction) / (wheelDiameterMM * Math.PI);
-    private double initialPos;
+    private double initialPos = 48;
 
     @Override
     public void runOpMode() {
@@ -26,7 +26,6 @@ public class DriveWithGripper2 extends LinearOpMode {
         rightDrive = hardwareMap.dcMotor.get("right_drive");
         armMotor = hardwareMap.dcMotor.get("arm_motor");
         intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
-        wristServo = hardwareMap.servo.get("wrist_servo");
 
         // Set motor directions
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -38,7 +37,14 @@ public class DriveWithGripper2 extends LinearOpMode {
         waitForStart();
         
         while (opModeIsActive){
-
+            intakeServo.setPower(1);
+            driveForward(30, 1);
+            armRotate(150, 1);
+            intakeServo.setDirection(DcMotor.Direction.REVERSE);
+            sleep(1000);
+            intakeServo.setPower(0);
+            armRotate(-150, 1);
+            driveForward(-120, 1);
         }
 
     }
@@ -76,37 +82,32 @@ public class DriveWithGripper2 extends LinearOpMode {
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-/*
-    private void rotate(double degrees, double power){
-        // Set target position
-        leftMotor.setTargetPosition(leftMotor.getCurrentPosition() + targetPosition);
-        rightMotor.setTargetPosition(rightMotor.getCurrentPosition() + targetPosition);
 
-        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void armRotate(double degrees, double power){
+        // Set target position
+        double armTargetPosition = ((degrees * 1/5)/360) * 1425.1;
+
+        armMotor.setTargetPosition(armMotor.getCurrentPosition() + targetPosition);
+
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set motor power
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
+        armMotor.setPower(power);
 
         // Wait for the motors to reach the target position
-        while (opModeIsActive() && (leftMotor.isBusy() || rightMotor.isBusy())) {
-            telemetry.addData("Target", targetPosition);
-            telemetry.addData("Left Current", leftMotor.getCurrentPosition());
-            telemetry.addData("Right Current", rightMotor.getCurrentPosition());
+        while (opModeIsActive() && (armMotor.isBusy())) {
+            telemetry.addData("Arm Target", targetPosition);
+            telemetry.addData("Arm Current", armMotor.getCurrentPosition());
             telemetry.update();
         }
 
-        // Stop motors
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
+        // Stop motor
+        armMotor.setPower(0);
 
         // Reset to RUN_USING_ENCODER mode
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
-        */
 }
 
 
