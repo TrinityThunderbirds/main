@@ -36,7 +36,6 @@ public class DriveWithGripper2 extends LinearOpMode {
 
         waitForStart();
         
-        while (opModeIsActive){
             intakeServo.setPower(1);
             driveForward(30, 1);
             armRotate(150, 1);
@@ -45,7 +44,6 @@ public class DriveWithGripper2 extends LinearOpMode {
             intakeServo.setPower(0);
             armRotate(-150, 1);
             driveForward(-120, 1);
-        }
 
     }
 
