@@ -10,7 +10,6 @@
 // B = CLOSE CLAW
 
 
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -28,6 +27,15 @@ public class DriveWithGripper2 extends LinearOpMode {
     DcMotor armMotor, linearSlide;
     Servo clawServo;
 
+    // Encoder information gotten from goBilda codes
+    final double ARM_TICKS_PER_DEGREE =
+            28 // number of encoder ticks per rotation of the bare motor
+                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
+                    * 1/360.0; // we want ticks per degree, not per rotation
+    
+    double targetArmPosition = 0;
+    
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize hardware from the hardware map
@@ -39,10 +47,14 @@ public class DriveWithGripper2 extends LinearOpMode {
         linearSlide = hardwareMap.dcMotor.get("linear_slide");
         clawServo = hardwareMap.servo.get("claw_servo");
 
-        // Reverse the left motors for proper mecanum behavior
+        // Reverse the left motors so it doesnt just spin
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        // Set the arm motor to run using encoders
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        
         waitForStart();
 
         while (opModeIsActive()) {
@@ -87,14 +99,20 @@ public class DriveWithGripper2 extends LinearOpMode {
             }
 
             // Arm motor control with triggers
-            if (gamepad2.left_trigger > 0) {
-                armMotor.setPower(gamepad1.left_trigger); // Move arm up
+             if (gamepad2.left_trigger > 0) {
+                targetArmPosition += gamepad2.left_trigger * ARM_TICKS_PER_DEGREE; // Move arm up
             } else if (gamepad2.right_trigger > 0) {
-                armMotor.setPower(-gamepad1.right_trigger); // Move arm down
-            } else {
-                armMotor.setPower(0); // Stop
+                targetArmPosition -= gamepad2.right_trigger * ARM_TICKS_PER_DEGREE; // Move arm down
             }
 
+            // Make target position in certain bounds
+            targetArmPosition = Range.clip(targetArmPosition, 0, 5000); // Adjust max range as needed
+
+            // Set arm motor to move to the target position
+            armMotor.setTargetPosition((int) targetArmPosition);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(0.6); // Adjust power as needed for smooth movement
+            
             // Telemetry for debugging
             telemetry.addData("Front Left Power", frontLeftPower);
             telemetry.addData("Front Right Power", frontRightPower);
