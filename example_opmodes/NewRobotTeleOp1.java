@@ -28,7 +28,7 @@ public class NewRobotTeleOp1 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize hardware from the hardware map
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontRight = hardwareMap.dcMotor.get("front_Right");
+        frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
         armMotor = hardwareMap.dcMotor.get("armMotor");
@@ -60,10 +60,10 @@ public class NewRobotTeleOp1 extends LinearOpMode {
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
 
-            frontLeftMotor.setPower(frontLeftPower * 0.6);
-            backLeftMotor.setPower(backLeftPower * 0.6);
-            frontRightMotor.setPower(frontRightPower * 0.6);
-            backRightMotor.setPower(backRightPower * 0.6);
+            frontLeft.setPower(frontLeftPower * 0.6);
+            backLeft.setPower(backLeftPower * 0.6);
+            frontRight.setPower(frontRightPower * 0.6);
+            backRight.setPower(backRightPower * 0.6);
 
             // Linear slide control
             double slidePower = -gamepad1.right_stick_y; // Extend/retract using right joystick
