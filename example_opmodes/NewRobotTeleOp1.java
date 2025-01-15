@@ -27,13 +27,13 @@ public class NewRobotTeleOp1 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize hardware from the hardware map
-        frontLeft = hardwareMap.dcMotor.get("front_left");
-        frontRight = hardwareMap.dcMotor.get("front_right");
-        backLeft = hardwareMap.dcMotor.get("back_left");
-        backRight = hardwareMap.dcMotor.get("back_right");
-        armMotor = hardwareMap.dcMotor.get("arm_motor");
-        linearSlide = hardwareMap.dcMotor.get("linear_slide");
-        clawServo = hardwareMap.servo.get("claw_servo");
+        frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        frontRight = hardwareMap.dcMotor.get("front_Right");
+        backLeft = hardwareMap.dcMotor.get("backLeft");
+        backRight = hardwareMap.dcMotor.get("backRight");
+        armMotor = hardwareMap.dcMotor.get("armMotor");
+        //linearSlide = hardwareMap.dcMotor.get("linear_slide");
+        //clawServo = hardwareMap.servo.get("claw_servo");
 
         // Reverse the left motors so it doesn't just spin
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -47,39 +47,34 @@ public class NewRobotTeleOp1 extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Mecanum drive control
-            double y = -gamepad1.left_stick_y; // Forward/backward
-            double x = gamepad1.left_stick_x * 1.1; // Strafe
-            double rx = gamepad1.left_stick_x; // Rotation
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
 
-            // Calculate wheel powers
-            double frontLeftPower = y + x + rx;
-            double frontRightPower = y - x - rx;
-            double backLeftPower = y - x + rx;
-            double backRightPower = y + x - rx;
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
 
-            // Normalize powers to not exceed 1
-            double maxPower = Math.max(1.0, Math.abs(frontLeftPower));
-            frontLeftPower /= maxPower;
-            frontRightPower /= maxPower;
-            backLeftPower /= maxPower;
-            backRightPower /= maxPower;
-
-            // Set power to the motors
-            frontLeft.setPower(frontLeftPower);
-            frontRight.setPower(frontRightPower);
-            backLeft.setPower(backLeftPower);
-            backRight.setPower(backRightPower);
+            frontLeftMotor.setPower(frontLeftPower * 0.6);
+            backLeftMotor.setPower(backLeftPower * 0.6);
+            frontRightMotor.setPower(frontRightPower * 0.6);
+            backRightMotor.setPower(backRightPower * 0.6);
 
             // Linear slide control
             double slidePower = -gamepad1.right_stick_y; // Extend/retract using right joystick
             linearSlide.setPower(Range.clip(slidePower, -0.6, 0.6));
 
             // Claw control
-            if (gamepad1.x) {
-                clawServo.setPosition(1.0); // Open claw
-            } else if (gamepad1.b) {
-                clawServo.setPosition(0.0); // Close claw
-            }
+            //if (gamepad1.x) {
+            //    clawServo.setPosition(1.0); // Open claw
+            //} else if (gamepad1.b) {
+            //    clawServo.setPosition(0.0); // Close claw
+            //}
 
             // Arm control
             if (gamepad1.y) {
@@ -101,8 +96,8 @@ public class NewRobotTeleOp1 extends LinearOpMode {
             telemetry.addData("Front Right Power", frontRightPower);
             telemetry.addData("Back Left Power", backLeftPower);
             telemetry.addData("Back Right Power", backRightPower);
-            telemetry.addData("Linear Slide Power", linearSlide.getPower());
-            telemetry.addData("Claw Position", clawServo.getPosition());
+            //telemetry.addData("Linear Slide Power", linearSlide.getPower());
+            //telemetry.addData("Claw Position", clawServo.getPosition());
             telemetry.update();
         }
     }
