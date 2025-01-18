@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Thunderbirds New Robot TeleOp 1", group = "TeleOp")
+@TeleOp(name = "NewRobotTeleOp1", group = "TeleOp")
 public class NewRobotTeleOp1 extends LinearOpMode {
 
     // Declare hardware components
-    DcMotor frontLeft, frontRight, backLeft, backRight;
+    DcMotor leftFront, rightFront, leftBack, rightBack;
     DcMotor armMotor, linearSlide;
     Servo clawServo;
 
@@ -27,17 +27,17 @@ public class NewRobotTeleOp1 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize hardware from the hardware map
-        frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontRight = hardwareMap.dcMotor.get("frontRight");
-        backLeft = hardwareMap.dcMotor.get("backLeft");
-        backRight = hardwareMap.dcMotor.get("backRight");
+        leftFront = hardwareMap.dcMotor.get("leftFront");
+        rightFront = hardwareMap.dcMotor.get("rightFront");
+        leftBack = hardwareMap.dcMotor.get("leftBack");
+        rightBack = hardwareMap.dcMotor.get("rightBack");
         armMotor = hardwareMap.dcMotor.get("armMotor");
         //linearSlide = hardwareMap.dcMotor.get("linear_slide");
         //clawServo = hardwareMap.servo.get("claw_servo");
 
         // Reverse the left motors so it doesn't just spin
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Set the arm motor to run using encoders
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -48,26 +48,26 @@ public class NewRobotTeleOp1 extends LinearOpMode {
         while (opModeIsActive()) {
             // Mecanum drive control
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = -gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+            double leftFrontPower = (y + x + rx) / denominator;
+            double leftBackPower = (y - x + rx) / denominator;
+            double rightFrontPower = (y - x - rx) / denominator;
+            double rightBackPower = (y + x - rx) / denominator;
 
-            frontLeft.setPower(frontLeftPower * 0.6);
-            backLeft.setPower(backLeftPower * 0.6);
-            frontRight.setPower(frontRightPower * 0.6);
-            backRight.setPower(backRightPower * 0.6);
+            leftFront.setPower(leftFrontPower * 0.6);
+            leftBack.setPower(leftBackPower * 0.6);
+            rightFront.setPower(rightFrontPower * 0.6);
+            rightBack.setPower(rightBackPower * 0.6);
 
             // Linear slide control
-            double slidePower = -gamepad1.right_stick_y; // Extend/retract using right joystick
-            linearSlide.setPower(Range.clip(slidePower, -0.6, 0.6));
+            // double slidePower = -gamepad1.right_stick_y; // Extend/retract using right joystick
+            // linearSlide.setPower(Range.clip(slidePower, -0.6, 0.6));
 
             // Claw control
             //if (gamepad1.x) {
@@ -92,10 +92,10 @@ public class NewRobotTeleOp1 extends LinearOpMode {
             armMotor.setPower(0.6); // Adjust power as needed
 
             // Telemetry for debugging
-            telemetry.addData("Front Left Power", frontLeftPower);
-            telemetry.addData("Front Right Power", frontRightPower);
-            telemetry.addData("Back Left Power", backLeftPower);
-            telemetry.addData("Back Right Power", backRightPower);
+            telemetry.addData("LeftFront Power", leftFrontPower);
+            telemetry.addData("RightFront Power", rightFrontPower);
+            telemetry.addData("LeftBack Power", leftBackPower);
+            telemetry.addData("RightBack Power", rightBackPower);
             //telemetry.addData("Linear Slide Power", linearSlide.getPower());
             //telemetry.addData("Claw Position", clawServo.getPosition());
             telemetry.update();
