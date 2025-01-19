@@ -14,7 +14,9 @@ public class NewRobotTeleOp1 extends LinearOpMode {
     DcMotor armMotor;
     Servo clawServo;
 
-    final long TURN_TIME_MS = 500; // Approximate time to turn 90 degrees
+    // Arm control variables
+    private int armTargetPosition = 0;
+    private final int ARM_INCREMENT = 50; // Encoder counts per button press
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,19 +32,24 @@ public class NewRobotTeleOp1 extends LinearOpMode {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        // Configure arm motor
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         waitForStart();
 
         while (opModeIsActive()) {
             // Mecanum drive control
             double y = -gamepad1.left_stick_y; // Forward/Backward
-            double rx = gamepad1.right_stick_x; // Rotation
+            double x = gamepad1.left_stick_x; // Rotation
 
             // Combine forward/backward movement and rotation
-            double denominator = Math.max(Math.abs(y) + Math.abs(rx), 1);
-            double leftFrontPower = (y + rx) / denominator;
-            double leftBackPower = (y + rx) / denominator;
-            double rightFrontPower = (y - rx) / denominator;
-            double rightBackPower = (y - rx) / denominator;
+            double denominator = Math.max(Math.abs(y) + Math.abs(x), 1);
+            double leftFrontPower = (y + x) / denominator;
+            double leftBackPower = (y + x) / denominator;
+            double rightFrontPower = (y - x) / denominator;
+            double rightBackPower = (y - x) / denominator;
 
             leftFront.setPower(leftFrontPower * 0.6);
             leftBack.setPower(leftBackPower * 0.6);
@@ -58,18 +65,24 @@ public class NewRobotTeleOp1 extends LinearOpMode {
 
             // Arm control
             if (gamepad1.y) {
-                armMotor.setPower(0.6); // Move arm up
+                armTargetPosition += ARM_INCREMENT;
             } else if (gamepad1.a) {
-                armMotor.setPower(-0.6); // Move arm down
-            } else {
-                armMotor.setPower(0); // Stop arm motor
+                armTargetPosition -= ARM_INCREMENT;
             }
+
+            // Clamp arm position to prevent going out of range
+            armTargetPosition = Math.max(0, Math.min(armTargetPosition, armMotor.getCurrentPosition() + 1000)); // Example max range
+
+            armMotor.setTargetPosition(armTargetPosition);
+            armMotor.setPower(0.6); // Set constant power to maintain position
 
             // Telemetry for debugging
             telemetry.addData("LeftFront Power", leftFront.getPower());
             telemetry.addData("RightFront Power", rightFront.getPower());
             telemetry.addData("LeftBack Power", leftBack.getPower());
             telemetry.addData("RightBack Power", rightBack.getPower());
+            telemetry.addData("Arm Target Position", armTargetPosition);
+            telemetry.addData("Arm Current Position", armMotor.getCurrentPosition());
             telemetry.update();
         }
     }
